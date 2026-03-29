@@ -59,8 +59,9 @@ Siber güvenlik uzmanlarının zararlı yazılımları anlaması ve kendini koru
 ---
 
 ## 🚀 Kurulum ve Kullanım
-
 ### 1. Gereksinimleri Yükle
 
 ```bash
 pip install -r requirements.txt
+python main.py
+
